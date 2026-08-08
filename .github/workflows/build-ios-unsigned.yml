@@ -17,6 +17,11 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Patch boost podspec (jfrog discontinued -> archives.boost.io)
+        run: |
+          find node_modules/react-native -name "boost.podspec" -exec sed -i '' 's|boostorg\.jfrog\.io/artifactory/main|archives.boost.io|g' {} +
+          grep -rl "boostorg.jfrog" node_modules/react-native || echo "OK: aucune URL jfrog restante"
+
       - name: Set up Ruby 3.1
         uses: ruby/setup-ruby@v1
         with:
