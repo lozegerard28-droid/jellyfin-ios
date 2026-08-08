@@ -17,10 +17,16 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Set up Ruby 3.1
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 3.1
+          bundler-cache: true
+
       - name: CocoaPods install
         run: |
           cd ios
-          pod install --repo-update
+          bundle exec pod install --repo-update
 
       - name: Xcode archive (unsigned)
         run: |
