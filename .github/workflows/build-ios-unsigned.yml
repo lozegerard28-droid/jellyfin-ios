@@ -42,12 +42,13 @@ jobs:
             -archivePath output/Jellyfin.xcarchive \
             CODE_SIGNING_ALLOWED=NO CODE_SIGN_STYLE=Manual
 
-      - name: Export IPA (unsigned)
+      - name: Build unsigned IPA (manual, no team required)
         run: |
-          xcodebuild -exportArchive \
-            -archivePath output/Jellyfin.xcarchive \
-            -exportPath output/ \
-            -exportOptionsPlist exportOptions.plist
+          mkdir -p output/Payload
+          cp -R "output/Jellyfin.xcarchive/Products/Applications/Jellyfin.app" output/Payload/
+          cd output
+          zip -qry Jellyfin.ipa Payload
+          ls -lh Jellyfin.ipa
 
       - uses: actions/upload-artifact@v4
         with:
