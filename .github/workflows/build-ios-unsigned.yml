@@ -1,0 +1,44 @@
+name: Build iOS unsigned IPA
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: CocoaPods install
+        run: |
+          cd ios
+          pod install --repo-update
+
+      - name: Xcode archive (unsigned)
+        run: |
+          xcodebuild archive \
+            -workspace ios/Jellyfin.xcworkspace \
+            -scheme Jellyfin \
+            -configuration Release \
+            -archivePath output/Jellyfin.xcarchive \
+            CODE_SIGNING_ALLOWED=NO CODE_SIGN_STYLE=Manual
+
+      - name: Export IPA (unsigned)
+        run: |
+          xcodebuild -exportArchive \
+            -archivePath output/Jellyfin.xcarchive \
+            -exportPath output/ \
+            -exportOptionsPlist exportOptions.plist
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Jellyfin-ipa
+          path: output/Jellyfin.ipa
