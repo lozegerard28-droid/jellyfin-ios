@@ -8,6 +8,7 @@
       "ios"
     ],
     "version": "1.8.0",
+    "jsEngine": "jsc",
     "orientation": "default",
     "primaryColor": "#00a4dc",
     "backgroundColor": "#101010",
